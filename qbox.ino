@@ -12,8 +12,6 @@
 ESP8266WebServer server(REC_PORT);
 WiFiManager wifiManager;
 
-IPAddress broadcastAddress = (uint32_t)WiFi.localIP() | ~((uint32_t)WiFi.subnetMask());
-
 unsigned long lastMillis;
 unsigned long currMillis;
 unsigned long last;
@@ -21,7 +19,6 @@ unsigned long period = 1000;
 String qVersion = "0.01";
 String qboxName = "QBox-" + String(ESP.getChipId());
 const char* id = qboxName.c_str();
-bool assigned = false;
 bool waitingOnAck = false;
 const uint16_t locPort = 23352;
 const uint32_t stepDur = 2000;
@@ -57,8 +54,7 @@ void setup() {
   server.on("/util/qbox/info", HTTP_GET, handleBoardInfo);
   server.on("/util/qbox/ver", HTTP_GET, handleVer);
   server.on("/util/qbox/assigned", HTTP_GET, []() {
-    assigned = true;
-    server.send(200, "text/html", "QBox assignment acknowledged. UDP Broadcasting stopped.");
+    server.send(200, "text/html", "QBox assignment acknowledged.");
   });
   server.begin();
 }
